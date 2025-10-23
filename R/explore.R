@@ -107,7 +107,11 @@ if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$",
 
 if(file.exists("Active_Building_Permits.csv")){
   abp  <- read_csv("Active_Building_Permits.csv", n_max = Inf)
-  
+  abp <- select(abp, 
+                OBJECTID, Permit_ID, P_Activity, 
+                P_Status, P_Type, 
+                PID, PIN, 
+                SiteAdd, Unit_Num, Unit_Type)
   saveRDS(object = abp, 
           file = "abp.Rds")
   file.remove("Active_Building_Permits.csv")
@@ -117,12 +121,5 @@ abp <- readRDS(file = "abp.RDS")
 setwd(home.wd)
 
 
-abp %>% colnames()
 
-View(abp)
 
-abp <- select(abp, 
-               OBJECTID, Permit_ID, P_Activity, 
-               P_Status, P_Type, 
-               PID, PIN, 
-               SiteAdd, Unit_Num, Unit_Type)
