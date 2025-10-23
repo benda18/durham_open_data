@@ -51,6 +51,7 @@ library(janitor)
 library(lubridate)
 library(ggplot2)
 library(dplyr)
+library(data.table)
 library(leaflet)
 
 # embed()
@@ -67,8 +68,8 @@ data.wd <- "C:/Users/bende/Documents/R/play/durham_open_data/data"
 # rename and reformat address file----
 setwd(data.wd)
 list.files()
-if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
-         x = list.files())){
+if(any(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
+         x = list.files()))){
   file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
                           x = list.files(), 
                           value = T), 
@@ -97,8 +98,8 @@ setwd(home.wd)
 # Active Building Permits
 setwd(data.wd)
 list.files()
-if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
-         x = list.files())){
+if(any(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
+         x = list.files()))){
   file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
                           x = list.files(), 
                           value = T), 
@@ -120,6 +121,20 @@ if(file.exists("Active_Building_Permits.csv")){
 abp <- readRDS(file = "abp.RDS")
 setwd(home.wd)
 
+# explore building permits----
+abp %>%
+  group_by(P_Type,P_Status, P_Activity) %>%
+  summarise(n_permits = n_distinct(Permit_ID), 
+            n_pin = n_distinct(PIN), 
+            n_pid = n_distinct(PID)) %>%
+  .[order(.$n_permits,decreasing = T),] %>%
+  as.data.table() %>%
+  melt(., 
+        id.vars = c("P_Type", "P_Status", "P_Activity") ) %>%
+  as_tibble() %>%
+  ggplot(data = .) + 
+  geom_point(aes(x = P_Activity, y = value, color = variable))
 
+unique(abp$P_Activity)
 
 
