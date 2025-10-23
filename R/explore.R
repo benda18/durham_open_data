@@ -91,3 +91,27 @@ if(file.exists("active_addresses.csv")){
 }
 
 addr <- readRDS(file = "addr.RDS")
+setwd(home.wd)
+
+
+# Active Building Permits
+setwd(data.wd)
+list.files()
+if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
+         x = list.files())){
+  file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
+                          x = list.files(), 
+                          value = T), 
+              to = "active_addresses.csv")
+}
+
+if(file.exists("Active_Building_Permits.csv")){
+  abp  <- read_csv("Active_Building_Permits.csv", n_max = Inf)
+  
+  saveRDS(object = abp, 
+          file = "abp.Rds")
+  file.remove("Active_Building_Permits.csv")
+}
+
+abp <- readRDS(file = "abp.RDS")
+setwd(home.wd)
