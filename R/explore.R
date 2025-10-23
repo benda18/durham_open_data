@@ -121,6 +121,31 @@ if(file.exists("Active_Building_Permits.csv")){
 abp <- readRDS(file = "abp.RDS")
 setwd(home.wd)
 
+# crime----
+setwd(data.wd)
+list.files()
+if(any(grepl(pattern = "^DPD_Crime.{1,}\\.csv$", 
+             x = list.files()))){
+  file.rename(from = grep(pattern = "^DPD_Crime_.{1,}\\.csv$", 
+                          x = list.files(), 
+                          value = T), 
+              to = "DPD_Crime.csv")
+}
+
+if(file.exists("DPD_Crime.csv")){
+  crime  <- read_csv("DPD_Crime.csv", n_max = Inf)
+  
+  saveRDS(object = crime, 
+          file = "crime.Rds")
+  file.remove("DPD_Crime.csv")
+  setwd(home.wd)
+}
+
+
+crime <- readRDS(file = "crime.Rds")
+abp   <- readRDS(file = "abp.Rds")
+setwd(home.wd)
+
 # explore building permits----
 abp %>%
   group_by(P_Type,P_Status, P_Activity) %>%
