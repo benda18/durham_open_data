@@ -1,6 +1,57 @@
+renv::use(
+  bit          = "bit@4.6.0",
+  bit64        = "bit64@4.6.0-1",
+  cli          = "cli@3.6.5",
+  clipr        = "clipr@0.8.0",
+  cpp11        = "cpp11@0.5.2",
+  crayon       = "crayon@1.5.3",
+  dplyr        = "dplyr@1.1.4",
+  farver       = "farver@2.1.2",
+  generics     = "generics@0.1.4",
+  ggplot2      = "ggplot2@4.0.0",
+  glue         = "glue@1.8.0",
+  gtable       = "gtable@0.3.6",
+  hms          = "hms@1.1.4",
+  isoband      = "isoband@0.2.7",
+  janitor      = "janitor@2.2.1",
+  labeling     = "labeling@0.4.3",
+  lifecycle    = "lifecycle@1.0.4",
+  lubridate    = "lubridate@1.9.4",
+  magrittr     = "magrittr@2.0.4",
+  pillar       = "pillar@1.11.1",
+  pkgconfig    = "pkgconfig@2.0.3",
+  prettyunits  = "prettyunits@1.2.0",
+  progress     = "progress@1.2.3",
+  purrr        = "purrr@1.1.0",
+  R6           = "R6@2.6.1",
+  RColorBrewer = "RColorBrewer@1.1-3",
+  readr        = "readr@2.1.5",
+  renv         = "renv@1.1.5",
+  rlang        = "rlang@1.1.6",
+  S7           = "S7@0.2.0",
+  scales       = "scales@1.4.0",
+  snakecase    = "snakecase@0.11.1",
+  stringi      = "stringi@1.8.7",
+  stringr      = "stringr@1.5.2",
+  tibble       = "tibble@3.3.0",
+  tidyr        = "tidyr@1.3.1",
+  tidyselect   = "tidyselect@1.2.1",
+  timechange   = "timechange@0.3.0",
+  tzdb         = "tzdb@0.5.0",
+  utf8         = "utf8@1.2.6",
+  vctrs        = "vctrs@0.6.5",
+  viridisLite  = "viridisLite@0.4.2",
+  vroom        = "vroom@1.6.6",
+  withr        = "withr@3.0.2"
+)
+
 library(renv)
 library(readr)
+library(janitor)
+library(lubridate)
+library(ggplot2)
 
+# embed()
 
 snapshot()
 
@@ -9,18 +60,33 @@ rm(list=ls());cat('\f')
 # https://live-durhamnc.opendata.arcgis.com/search
 
 home.wd <- "C:/Users/bende/Documents/R/play/durham_open_data"
-data.wd <- "C:/Users/bende/Documents/R/play/durham_open_data/data"
+data.wd <- "C:/Users/bende/Documents/R/play/durham_open_data/data" 
 
 # rename crazy filenames
 setwd(data.wd)
 list.files()
 
-base::file.rename(
-  
-)
+# rename files----
+if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
+         x = list.files())){
+  file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
+                          x = list.files(), 
+                          value = T), 
+              to = "active_addresses.csv")
+}
 
-addr <- readr::read_csv_chunked(file = "C:/Users/bende/Documents/R/play/durham_open_data/")
+addr <- read_csv("active_addresses.csv", n_max = Inf)
 
-getwd()
+args(read_csv)
 
-list.files(path = "C:/Users/bende/Documents/R/play/durham_open_data/data")
+# f_cb <- function(x) x
+# addr <- readr::read_csv_chunked(file = "active_addresses.csv", 
+#                                 callback = DataFrameCallback$new(f_cb))
+# 
+# getwd()
+# 
+# f <- function(x, pos) subset(x, gear == 3)
+# read_csv_chunked(readr_example("mtcars.csv"), 
+#                  DataFrameCallback$new(f), chunk_size = 5)
+# 
+# read_csv(readr_example("mtcars.csv"))
