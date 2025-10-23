@@ -50,6 +50,8 @@ library(readr)
 library(janitor)
 library(lubridate)
 library(ggplot2)
+library(dplyr)
+library(leaflet)
 
 # embed()
 
@@ -60,13 +62,11 @@ rm(list=ls());cat('\f')
 # https://live-durhamnc.opendata.arcgis.com/search
 
 home.wd <- "C:/Users/bende/Documents/R/play/durham_open_data"
-data.wd <- "C:/Users/bende/Documents/R/play/durham_open_data/data" 
+data.wd <- "C:/Users/bende/Documents/R/play/durham_open_data/data"
 
-# rename crazy filenames
+# rename and reformat address file----
 setwd(data.wd)
 list.files()
-
-# rename files----
 if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
          x = list.files())){
   file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
@@ -75,18 +75,19 @@ if(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$",
               to = "active_addresses.csv")
 }
 
-addr <- read_csv("active_addresses.csv", n_max = Inf)
+if(file.exists("active_addresses.csv")){
+  addr <- read_csv("active_addresses.csv", n_max = Inf)
+  addr <- select(addr, OBJECTID, 
+                 #HOUSENUMSU, STREETDIR, STREETNAME, STREETTYPE, STDIRSUF, UNIT, CITY, CITY2,
+                 SITE_ADDRE, USPS_ADDRESS, ZIPCODE,
+                 ID, PARCEL_ID, PIN, 
+                 SUBDIVISION, TYPE, IMPROVED, RES_TYPE,
+                 # COMMENT, BLDG, PENDING, EDITDATE, CREATEDATE, RETIRE_DATE, OUTSIDE_COUNTY,
+                 # MILEMARKER, 
+                 x, y, GlobalID)
+  saveRDS(object = addr, 
+          file = "addr.Rds")
+  file.remove("active_addresses.csv")
+}
 
-args(read_csv)
-
-# f_cb <- function(x) x
-# addr <- readr::read_csv_chunked(file = "active_addresses.csv", 
-#                                 callback = DataFrameCallback$new(f_cb))
-# 
-# getwd()
-# 
-# f <- function(x, pos) subset(x, gear == 3)
-# read_csv_chunked(readr_example("mtcars.csv"), 
-#                  DataFrameCallback$new(f), chunk_size = 5)
-# 
-# read_csv(readr_example("mtcars.csv"))
+addr <- readRDS(file = "addr.RDS")
