@@ -115,3 +115,14 @@ if(file.exists("Active_Building_Permits.csv")){
 
 abp <- readRDS(file = "abp.RDS")
 setwd(home.wd)
+
+
+abp %>% colnames()
+
+View(abp)
+
+abp <- select(abp, 
+               OBJECTID, Permit_ID, P_Activity, 
+               P_Status, P_Type, 
+               PID, PIN, 
+               SiteAdd, Unit_Num, Unit_Type)
