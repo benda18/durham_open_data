@@ -69,7 +69,7 @@ data.wd <- "C:/Users/bende/Documents/R/play/durham_open_data/data"
 setwd(data.wd)
 list.files()
 if(any(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
-         x = list.files()))){
+             x = list.files()))){
   file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
                           x = list.files(), 
                           value = T), 
@@ -99,7 +99,7 @@ setwd(home.wd)
 setwd(data.wd)
 list.files()
 if(any(grepl(pattern = "^Active_Addresses_.{1,}\\.csv$", 
-         x = list.files()))){
+             x = list.files()))){
   file.rename(from = grep(pattern = "^Active_Addresses_.{1,}\\.csv$", 
                           x = list.files(), 
                           value = T), 
@@ -134,7 +134,12 @@ if(any(grepl(pattern = "^DPD_Crime.{1,}\\.csv$",
 
 if(file.exists("DPD_Crime.csv")){
   crime  <- read_csv("DPD_Crime.csv", n_max = Inf)
-  
+  crime <- select(crime, 
+                  OBJECTID, INCI_ID, DATE_REPT, HOUR_REPT, REPORTEDAS, 
+                  UCR_CODE, CHRGDESC, 
+                  ATTM_COMP, 
+                  PREMISE, WEAPON, CSSTATUS, 
+                  DIST, BEAT) 
   saveRDS(object = crime, 
           file = "crime.Rds")
   file.remove("DPD_Crime.csv")
@@ -155,11 +160,20 @@ abp %>%
   .[order(.$n_permits,decreasing = T),] %>%
   as.data.table() %>%
   melt(., 
-        id.vars = c("P_Type", "P_Status", "P_Activity") ) %>%
+       id.vars = c("P_Type", "P_Status", "P_Activity") ) %>%
   as_tibble() %>%
   ggplot(data = .) + 
   geom_point(aes(x = P_Activity, y = value, color = variable))
 
 unique(abp$P_Activity)
+
+# explore crime----
+
+crime
+
+View(crime[sample(1:nrow(crime), size = 100),])
+
+
+
 
 
